@@ -1,6 +1,16 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const bcrypt = require( 'bcrypt' );
+const jwt = require( 'jsonwebtoken' );
+const User = require( '../models/user' );
+const passwordValidator = require( 'password-validator' );
+const schema = new passwordValidator();
+
+schema
+    .is().min( 8 )
+    .is().max( 100 )
+    .has().uppercase()
+    .has().lowercase()
+console.log( schema.validate( 'validPASS123' ) );
+
 
 exports.signup = (req, res, next) => {
     bcrypt.hash( req.body.password, 10 )
@@ -16,7 +26,6 @@ exports.signup = (req, res, next) => {
         .catch( error => res.status( 500 ).json( {error} ) );
 };
 
-// connexion post validation //
 exports.login = (req, res, next) => {
     User.findOne( {email: req.body.email} )
         .then( user => {

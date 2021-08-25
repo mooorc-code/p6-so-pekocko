@@ -1,14 +1,15 @@
 //modules//
 const express = require( 'express' );
-const bodyParser = require( 'body-parser' );
 const mongoose = require( 'mongoose' );
+const bodyParser = require( 'body-parser' );
 const userRoutes = require( './routes/user' );
-const path = require('path');
-
-
+const saucesRoutes = require( './routes/sauces' );
+const path = require( 'path' );
+const helmet = require( "helmet" );
+require( 'dotenv' ).config();
 
 //MongoDb//
-mongoose.connect( 'mongodb+srv://admin:171060@cluster0.eoczz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect( 'mongodb+srv://' + process.env.LOGIN + ':' + process.env.PASSWORD + '@' + process.env.URL,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -25,11 +26,12 @@ app.use( (req, res, next) => {
     next();
 } );
 
+app.use( helmet() );
 app.use( bodyParser.json() );
 //routers//
-app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use( '/api/auth', userRoutes);
-
+app.use( '/images', express.static( path.join( __dirname, 'images' ) ) );
+app.use( '/api/auth', userRoutes );
+app.use( '/api/sauces', saucesRoutes );
 
 module.exports = app;
 
